@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
-import { CreatePermissionDto, UpdatePermissionDto } from '@/permission/permission.dto'
+import { CreatePermissionInput, UpdatePermissionInput } from '@/permission/permission.inputs'
 import { PrismaService } from '@/prisma/prisma.service'
 
 @Injectable()
 export class PermissionService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreatePermissionDto) {
+  async create(data: CreatePermissionInput) {
     return this.prisma.permission.create({ data })
   }
 
@@ -25,7 +25,7 @@ export class PermissionService {
     return permission
   }
 
-  async update(id: string, data: UpdatePermissionDto) {
+  async update(id: string, data: UpdatePermissionInput) {
     try {
       return await this.prisma.permission.update({ where: { id }, data })
     } catch (error) {

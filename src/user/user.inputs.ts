@@ -81,4 +81,9 @@ export class UpdateUserInput {
   @IsOptional()
   @IsString()
   phone_number?: string
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsEmail()
+  new_email?: string | null
 }

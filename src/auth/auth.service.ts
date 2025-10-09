@@ -3,27 +3,12 @@ import { pick } from 'lodash'
 
 import { TokenResponse } from '@/auth-token/auth-token.interface'
 import { AuthTokenService } from '@/auth-token/auth-token.service'
-import { AssignRoleDto, RevokeRoleDto } from '@/auth/auth.dto'
+import { AssignRoleInput, ChangeEmailInput, ChangePasswordInput, ForgotPasswordInput, RefreshTokenInput, VerifyForgotPasswordInput } from '@/auth/auth.inputs'
 import { MessageResponse } from '@/common/common.interface'
 import { CommonService } from '@/common/common.service'
 import { PrismaService } from '@/prisma/prisma.service'
 import { RoleService } from '@/role/role.service'
-import {
-  ChangeEmailDto,
-  ChangePasswordDto,
-  ForgotPasswordDto,
-  LoginDto,
-  RefreshTokenDto,
-  RegisterDto,
-  ResendVerificationDto,
-  SetUserEmailDto,
-  SetUserPasswordDto,
-  VerifyChangeEmailDto,
-  VerifyEmailDto,
-  VerifyForgotPasswordCodeDto,
-  VerifyForgotPasswordDto,
-  VerifyUserPasswordDto
-} from '@/user/user.dto'
+import { LoginInput, RegisterInput } from '@/user/user.inputs'
 import { UserResponse, UserWithRoles } from '@/user/user.interface'
 import { UserService } from '@/user/user.service'
 import { VerificationTokenService } from '@/verification-token/verification-token.service'
@@ -40,12 +25,12 @@ export class AuthService {
     private userService: UserService
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<UserResponse> {
-    const hashedPassword = await this.commonService.hashPassword(registerDto.password)
+  async register(registerInput: RegisterInput): Promise<UserResponse> {
+    const hashedPassword = await this.commonService.hashPassword(registerInput.password)
 
     const user = await this.prismaService.user.create({
       data: {
-        ...registerDto,
+        ...registerInput,
         password: hashedPassword
       }
     })
@@ -74,8 +59,8 @@ export class AuthService {
     return pick(user, ['id', 'email', 'first_name', 'last_name', 'status'])
   }
 
-  async verifyUserEmail(params: VerifyEmailDto): Promise<UserResponse> {
-    const { email, token } = params || {}
+  async verifyUserEmail(params: { email: string; token: string }): Promise<UserResponse> {
+    const { email, token } = params
 
     const verificationToken = await this.verificationTokenService.getVerificationToken({
       where: { email, token, type: 'user_verification', status: 'unverified' }
@@ -94,8 +79,8 @@ export class AuthService {
     return { id: user.id, email: user.email, status: user.status }
   }
 
-  async resendVerificationEmail(resendVerificationDto: ResendVerificationDto): Promise<MessageResponse> {
-    const { email } = resendVerificationDto
+  async resendVerificationEmail(params: { email: string }): Promise<MessageResponse> {
+    const { email } = params
 
     const user = await this.userService.findOne({ where: { email } })
     if (!user?.id) {
@@ -105,14 +90,14 @@ export class AuthService {
     return { message: 'VERIFICATION_EMAIL_SENT', success: true }
   }
 
-  async login(loginDto: LoginDto): Promise<TokenResponse> {
+  async login(loginInput: LoginInput): Promise<TokenResponse> {
     const user: UserWithRoles | null = await this.userService.findOne({
-      where: { email: loginDto.email }
+      where: { email: loginInput.email }
     })
     if (!user?.id) {
       throw new UnauthorizedException('USER_DOES_NOT_EXIST')
     }
-    if (!(await this.commonService.comparePassword(loginDto.password, user?.password || ''))) {
+    if (!(await this.commonService.comparePassword(loginInput.password, user?.password || ''))) {
       throw new UnauthorizedException('INVALID_CREDENTIALS')
     }
 
@@ -123,8 +108,8 @@ export class AuthService {
     })
   }
 
-  async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<TokenResponse> {
-    const { access_token, refresh_token } = refreshTokenDto
+  async refreshToken(refreshTokenInput: RefreshTokenInput): Promise<TokenResponse> {
+    const { access_token, refresh_token } = refreshTokenInput
 
     const authToken = await this.authTokenService.getAuthToken({ where: { access_token, refresh_token } })
     if (!authToken?.id) {
@@ -199,8 +184,8 @@ export class AuthService {
     return pick(user, ['id', 'email', 'first_name', 'last_name', 'status'])
   }
 
-  async cancelChangeEmail(changeEmailDto: ChangeEmailDto): Promise<MessageResponse> {
-    const { email } = changeEmailDto
+  async cancelChangeEmail(params: { email: string }): Promise<MessageResponse> {
+    const { email } = params
 
     const user = await this.prismaService.user.findFirst({
       where: { new_email: email }
@@ -217,9 +202,7 @@ export class AuthService {
     return { message: 'EMAIL_CHANGE_CANCELLED', success: true }
   }
 
-  async verifyChangeEmail(params: VerifyChangeEmailDto, user_id: string): Promise<UserResponse> {
-    const { token } = params || {}
-
+  async verifyChangeEmail(token: string, user_id: string): Promise<UserResponse> {
     const verificationToken = await this.verificationTokenService.getVerificationToken({
       where: { token, type: 'user_verification', user_id, status: 'unverified' }
     })
@@ -245,8 +228,8 @@ export class AuthService {
     return pick(updatedUser, ['id', 'email', 'first_name', 'last_name', 'status'])
   }
 
-  async setUserEmail(setUserEmailDto: SetUserEmailDto): Promise<UserResponse> {
-    const { new_email, user_id } = setUserEmailDto
+  async setUserEmail(params: { new_email: string; user_id: string }): Promise<UserResponse> {
+    const { new_email, user_id } = params
 
     const existingUser = await this.prismaService.user.findFirst({
       where: { OR: [{ email: new_email }, { new_email }] }
@@ -270,8 +253,8 @@ export class AuthService {
     }
   }
 
-  async changePassword(changePasswordDto: ChangePasswordDto, user_id?: string): Promise<UserResponse> {
-    const { new_password, old_password } = changePasswordDto
+  async changePassword(changePasswordInput: ChangePasswordInput, user_id?: string): Promise<UserResponse> {
+    const { new_password, old_password } = changePasswordInput
 
     if (!user_id) {
       throw new Error('UNAUTHORIZED')
@@ -327,8 +310,8 @@ export class AuthService {
     }
   }
 
-  async setUserPassword(setUserPasswordDto: SetUserPasswordDto): Promise<{ id: string; message: string }> {
-    const { password, user_id } = setUserPasswordDto
+  async setUserPassword(params: { password: string; user_id: string }): Promise<{ id: string; message: string }> {
+    const { password, user_id } = params
 
     const hashedPassword = await this.commonService.hashPassword(password)
     const user = await this.prismaService.user.update({
@@ -339,8 +322,8 @@ export class AuthService {
     return { id: user.id, message: 'PASSWORD_SET' }
   }
 
-  async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<MessageResponse> {
-    const { email } = forgotPasswordDto
+  async forgotPassword(forgotPasswordInput: ForgotPasswordInput): Promise<MessageResponse> {
+    const { email } = forgotPasswordInput
 
     const user = await this.userService.findOne({ where: { email } })
     if (!user) {
@@ -360,8 +343,8 @@ export class AuthService {
     return { message: 'FORGOT_PASSWORD_EMAIL_SENT', success: true }
   }
 
-  async retryForgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<MessageResponse> {
-    const { email } = forgotPasswordDto
+  async retryForgotPassword(params: { email: string }): Promise<MessageResponse> {
+    const { email } = params
 
     const user = await this.userService.findOne({ where: { email } })
     if (!user) {
@@ -371,8 +354,8 @@ export class AuthService {
     return { message: 'FORGOT_PASSWORD_EMAIL_RESENT', success: true }
   }
 
-  async verifyForgotPassword(verifyForgotPasswordDto: VerifyForgotPasswordDto): Promise<UserResponse> {
-    const { email, password, token } = verifyForgotPasswordDto
+  async verifyForgotPassword(verifyForgotPasswordInput: VerifyForgotPasswordInput): Promise<UserResponse> {
+    const { email, password, token } = verifyForgotPasswordInput
 
     const verificationToken = await this.verificationTokenService.getVerificationToken({
       where: { email, token, type: 'forgot_password', status: 'unverified' }
@@ -398,8 +381,8 @@ export class AuthService {
     }
   }
 
-  async verifyForgotPasswordCode(params: VerifyForgotPasswordCodeDto): Promise<MessageResponse> {
-    const { email, token } = params || {}
+  async verifyForgotPasswordCode(params: { email: string; token: string }): Promise<MessageResponse> {
+    const { email, token } = params
 
     const verificationToken = await this.verificationTokenService.getVerificationToken({
       where: { email, token, type: 'forgot_password', status: 'unverified' }
@@ -411,13 +394,7 @@ export class AuthService {
     return { message: 'OTP_IS_VALID', success: true }
   }
 
-  async verifyUserPassword(verifyUserPasswordDto: VerifyUserPasswordDto, user_id?: string): Promise<MessageResponse> {
-    const { password } = verifyUserPasswordDto
-
-    if (!user_id) {
-      throw new Error('UNAUTHORIZED')
-    }
-
+  async verifyUserPassword(password: string, user_id: string): Promise<MessageResponse> {
     const user = await this.userService.findOne({ where: { id: user_id } })
     if (!user) {
       throw new Error('USER_IS_NOT_FOUND')
@@ -455,8 +432,8 @@ export class AuthService {
     }
   }
 
-  async assignRole(assignRoleDto: AssignRoleDto) {
-    const { user_id, role_id } = assignRoleDto
+  async assignRole(assignRoleInput: AssignRoleInput) {
+    const { user_id, role_id } = assignRoleInput
 
     const role = await this.roleService.findOne({ where: { id: role_id } })
     if (!role) {
@@ -478,8 +455,8 @@ export class AuthService {
     })
   }
 
-  async revokeRole(revokeRoleDto: RevokeRoleDto) {
-    const { user_id, role_id } = revokeRoleDto
+  async revokeRole(revokeRoleInput: AssignRoleInput) {
+    const { user_id, role_id } = revokeRoleInput
 
     const role = await this.roleService.findOne({ where: { id: role_id } })
     if (!role) {

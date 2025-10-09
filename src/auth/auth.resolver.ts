@@ -1,24 +1,30 @@
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { RoleName } from '@prisma/client'
 
+import { GqlUser } from '@/decorators/graphql-user.decorator'
 import { Permissions } from '@/decorators/permissions.decorator'
 import { Roles } from '@/decorators/roles.decorator'
-import { GqlUser } from '@/decorators/graphql-user.decorator'
 import { GraphQLAuthGuard } from '@/guards/graphql-auth.guard'
 import { GraphQLPermissionsGuard } from '@/guards/graphql-permissions.guard'
 import { GraphQLRolesGuard } from '@/guards/graphql-roles.guard'
 
-import { AuthPayload, User, UserResponse } from '@/user/user.types'
-import { RegisterInput, LoginInput } from '@/user/user.inputs'
+import { LoginInput, RegisterInput } from '@/user/user.inputs'
+import { AuthPayload, UserResponse } from '@/user/user.types'
 import {
-  RefreshTokenInput,
+  AssignRoleInput,
+  CancelChangeEmailInput,
   ChangeEmailInput,
-  VerifyChangeEmailInput,
   ChangePasswordInput,
   ForgotPasswordInput,
+  RefreshTokenInput,
+  ResendVerificationInput,
+  SetUserEmailInput,
+  SetUserPasswordInput,
+  VerifyEmailInput,
+  VerifyForgotPasswordCodeInput,
   VerifyForgotPasswordInput,
-  AssignRoleInput
+  VerifyUserPasswordInput
 } from './auth.inputs'
 import { AuthService } from './auth.service'
 
@@ -29,6 +35,17 @@ export class AuthResolver {
   @Mutation(() => UserResponse)
   async register(@Args('input') input: RegisterInput): Promise<UserResponse> {
     return this.authService.register(input)
+  }
+
+  @Mutation(() => UserResponse)
+  async verifyUserEmail(@Args('input') input: VerifyEmailInput): Promise<UserResponse> {
+    return this.authService.verifyUserEmail(input)
+  }
+
+  @Mutation(() => Boolean)
+  async resendVerificationEmail(@Args('input') input: ResendVerificationInput): Promise<boolean> {
+    await this.authService.resendVerificationEmail(input)
+    return true
   }
 
   @Mutation(() => AuthPayload)
@@ -49,20 +66,32 @@ export class AuthResolver {
     return true
   }
 
-  @Query(() => UserResponse)
+  @Mutation(() => Boolean)
   @UseGuards(GraphQLAuthGuard)
-  async me(@GqlUser('user_id') user_id: string): Promise<UserResponse> {
-    return this.authService.getAuthUser(user_id)
+  async changeEmail(@Args('input') input: ChangeEmailInput, @GqlUser('user_id') user_id: string): Promise<boolean> {
+    await this.authService.changeEmail(input.email, user_id)
+    return true
   }
 
   @Mutation(() => Boolean)
   @UseGuards(GraphQLAuthGuard)
-  async changeEmail(
-    @Args('input') input: ChangeEmailInput,
-    @GqlUser('user_id') user_id: string
-  ): Promise<boolean> {
-    await this.authService.changeEmail(input.email, user_id)
+  async cancelChangeEmail(@Args('input') input: CancelChangeEmailInput): Promise<boolean> {
+    await this.authService.cancelChangeEmail(input)
     return true
+  }
+
+  @Mutation(() => UserResponse)
+  @UseGuards(GraphQLAuthGuard)
+  async verifyChangeEmail(@Args('token') token: string, @GqlUser('user_id') user_id: string): Promise<UserResponse> {
+    return this.authService.verifyChangeEmail(token, user_id)
+  }
+
+  @Mutation(() => UserResponse)
+  @UseGuards(GraphQLAuthGuard, GraphQLRolesGuard, GraphQLPermissionsGuard)
+  @Roles(RoleName.admin, RoleName.developer)
+  @Permissions('user.update')
+  async setUserEmail(@Args('input') input: SetUserEmailInput): Promise<UserResponse> {
+    return this.authService.setUserEmail(input)
   }
 
   @Mutation(() => Boolean)
@@ -76,8 +105,23 @@ export class AuthResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(GraphQLAuthGuard, GraphQLRolesGuard, GraphQLPermissionsGuard)
+  @Roles(RoleName.admin, RoleName.developer)
+  @Permissions('user.update')
+  async setUserPassword(@Args('input') input: SetUserPasswordInput): Promise<boolean> {
+    await this.authService.setUserPassword(input)
+    return true
+  }
+
+  @Mutation(() => Boolean)
   async forgotPassword(@Args('input') input: ForgotPasswordInput): Promise<boolean> {
     await this.authService.forgotPassword(input)
+    return true
+  }
+
+  @Mutation(() => Boolean)
+  async retryForgotPassword(@Args('input') input: ForgotPasswordInput): Promise<boolean> {
+    await this.authService.retryForgotPassword(input)
     return true
   }
 
@@ -85,6 +129,25 @@ export class AuthResolver {
   async verifyForgotPassword(@Args('input') input: VerifyForgotPasswordInput): Promise<boolean> {
     await this.authService.verifyForgotPassword(input)
     return true
+  }
+
+  @Mutation(() => Boolean)
+  async verifyForgotPasswordCode(@Args('input') input: VerifyForgotPasswordCodeInput): Promise<boolean> {
+    await this.authService.verifyForgotPasswordCode(input)
+    return true
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(GraphQLAuthGuard)
+  async verifyUserPassword(@Args('input') input: VerifyUserPasswordInput, @GqlUser('user_id') user_id: string): Promise<boolean> {
+    const result = await this.authService.verifyUserPassword(input.password, user_id)
+    return result.success
+  }
+
+  @Query(() => UserResponse)
+  @UseGuards(GraphQLAuthGuard)
+  async me(@GqlUser('user_id') user_id: string): Promise<UserResponse> {
+    return this.authService.getAuthUser(user_id)
   }
 
   @Mutation(() => Boolean)

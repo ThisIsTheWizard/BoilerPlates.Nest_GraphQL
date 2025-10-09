@@ -3,13 +3,13 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
-import { CreateRoleDto, ManagePermissionDto, UpdateRoleDto } from './role.dto'
+import { CreateRoleInput, ManagePermissionInput, UpdateRoleInput } from './role.inputs'
 
 @Injectable()
 export class RoleService {
   constructor(private prisma: PrismaService) {}
 
-  async create(params: CreateRoleDto) {
+  async create(params: CreateRoleInput) {
     return this.prisma.role.create({ data: params })
   }
 
@@ -35,7 +35,7 @@ export class RoleService {
     return this.prisma.role.findUnique(options)
   }
 
-  async update(id: string, params: UpdateRoleDto) {
+  async update(id: string, params: UpdateRoleInput) {
     try {
       return this.prisma.role.update({ data: params, where: { id } })
     } catch (error) {
@@ -64,7 +64,7 @@ export class RoleService {
     }
   }
 
-  async assignPermission(params: ManagePermissionDto) {
+  async assignPermission(params: ManagePermissionInput) {
     const { can_do_the_action = false, permission_id, role_id } = params || {}
 
     return this.prisma.rolePermission.upsert({
@@ -83,7 +83,7 @@ export class RoleService {
     })
   }
 
-  async revokePermission(params: ManagePermissionDto) {
+  async revokePermission(params: ManagePermissionInput) {
     const { permission_id, role_id } = params || {}
 
     return this.prisma.rolePermission.delete({
@@ -96,7 +96,7 @@ export class RoleService {
     })
   }
 
-  async updatePermission(params: ManagePermissionDto) {
+  async updatePermission(params: ManagePermissionInput) {
     const { can_do_the_action = false, permission_id, role_id } = params || {}
 
     return this.prisma.rolePermission.update({

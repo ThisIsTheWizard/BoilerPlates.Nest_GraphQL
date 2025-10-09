@@ -15,14 +15,18 @@ This repository provides a ready-to-use **NestJS + GraphQL API** connected to Po
 
 ## 🚀 Features
 
-- NestJS + GraphQL API with Apollo Server
+- **Pure GraphQL API** with Apollo Server (no REST endpoints)
 - PostgreSQL database running in Docker
 - Prisma ORM for type-safe database access
 - GraphQL Playground for API exploration
+- Complete authentication & authorization system
 - Role-based access control with GraphQL guards
+- Permission-based access control
+- JWT token management with refresh tokens
 - pgAdmin 4 for database management
 - Environment-based configuration
 - Fully Dockerized for easy setup and deployment
+- Comprehensive test suite
 
 ---
 
@@ -36,32 +40,40 @@ BoilerPlates.Nest_GraphQL/
 └───src/
    ├───main.ts               # NestJS entry point
    ├───app/                  # Application core
-   │   ├── app.module.ts     # Root module
-   │   ├── app.controller.ts # Root controller
+   │   ├── app.module.ts     # Root module with GraphQL setup
+   │   ├── app.controller.ts # Basic health check endpoint
    │   └── app.service.ts    # Root service
    ├───auth/                 # Authentication module
-   │   ├── auth.resolver.ts  # GraphQL resolver
-   │   ├── auth.service.ts
-   │   ├── auth.module.ts
+   │   ├── auth.resolver.ts  # GraphQL resolver for auth
+   │   ├── auth.service.ts   # Authentication business logic
+   │   ├── auth.module.ts    # Auth module configuration
    │   └── auth.inputs.ts    # GraphQL input types
    ├───user/                 # User management
-   │   ├── user.resolver.ts  # GraphQL resolver
-   │   ├── user.service.ts
-   │   ├── user.module.ts
+   │   ├── user.resolver.ts  # GraphQL resolver for users
+   │   ├── user.service.ts   # User business logic
+   │   ├── user.module.ts    # User module configuration
    │   ├── user.types.ts     # GraphQL object types
    │   └── user.inputs.ts    # GraphQL input types
    ├───role/                 # Role management
-   │   ├── role.resolver.ts  # GraphQL resolver
-   │   ├── role.service.ts
-   │   ├── role.module.ts
+   │   ├── role.resolver.ts  # GraphQL resolver for roles
+   │   ├── role.service.ts   # Role business logic
+   │   ├── role.module.ts    # Role module configuration
    │   ├── role.types.ts     # GraphQL object types
    │   └── role.inputs.ts    # GraphQL input types
    ├───permission/           # Permission management
-   │   ├── permission.resolver.ts # GraphQL resolver
-   │   ├── permission.service.ts
-   │   ├── permission.module.ts
+   │   ├── permission.resolver.ts # GraphQL resolver for permissions
+   │   ├── permission.service.ts  # Permission business logic
+   │   ├── permission.module.ts   # Permission module configuration
    │   ├── permission.types.ts    # GraphQL object types
    │   └── permission.inputs.ts   # GraphQL input types
+   ├───guards/               # GraphQL-specific guards
+   │   ├── graphql-auth.guard.ts       # Authentication guard
+   │   ├── graphql-roles.guard.ts      # Role-based access guard
+   │   └── graphql-permissions.guard.ts # Permission-based access guard
+   ├───decorators/           # Custom decorators
+   │   ├── graphql-user.decorator.ts   # Extract user from GraphQL context
+   │   ├── roles.decorator.ts          # Role metadata decorator
+   │   └── permissions.decorator.ts    # Permission metadata decorator
    └───prisma/
        └── prisma.service.ts # Prisma database service
 ```
@@ -109,10 +121,59 @@ docker-compose up -d --build
 ## 🌐 Access
 
 - **GraphQL Playground** → [http://localhost:8000/graphql](http://localhost:8000/graphql)
-- **NestJS API** → [http://localhost:8000](http://localhost:8000)
+- **Health Check** → [http://localhost:8000](http://localhost:8000)
 - **PostgreSQL** → [http://localhost:5432](http://localhost:5432)
 - **pgAdmin** → [http://localhost:4000](http://localhost:4000)
   Use credentials from `.env`
+
+## 📋 Available GraphQL Operations
+
+### Authentication
+- `register` - Register a new user
+- `verifyUserEmail` - Verify user email with token
+- `resendVerificationEmail` - Resend email verification
+- `login` - Login with email/password
+- `refreshToken` - Refresh JWT token
+- `logout` - Logout user
+- `changeEmail` - Change user email
+- `cancelChangeEmail` - Cancel email change request
+- `verifyChangeEmail` - Verify email change with token
+- `setUserEmail` - Set user email (admin only)
+- `changePassword` - Change user password
+- `setUserPassword` - Set user password (admin only)
+- `forgotPassword` - Request password reset
+- `retryForgotPassword` - Retry password reset request
+- `verifyForgotPassword` - Verify and reset password
+- `verifyForgotPasswordCode` - Verify password reset code
+- `verifyUserPassword` - Verify user password
+- `me` - Get current user info
+- `assignRole` - Assign role to user (admin only)
+- `revokeRole` - Revoke role from user (admin only)
+
+### User Management
+- `users` - Get all users (admin/developer only)
+- `user(id)` - Get user by ID (admin/developer only)
+- `createUser` - Create new user (admin/developer only)
+- `updateUser` - Update user (admin/developer only)
+- `deleteUser` - Delete user (admin/developer only)
+
+### Role Management
+- `roles` - Get all roles (admin/developer only)
+- `role(id)` - Get role by ID (admin/developer only)
+- `createRole` - Create new role (admin/developer only)
+- `updateRole` - Update role (admin/developer only)
+- `deleteRole` - Delete role (admin/developer only)
+- `assignPermission` - Assign permission to role (admin/developer only)
+- `revokePermission` - Revoke permission from role (admin/developer only)
+- `seedRoles` - Seed system roles (admin/developer only)
+
+### Permission Management
+- `permissions` - Get all permissions (admin/developer only)
+- `permission(id)` - Get permission by ID (admin/developer only)
+- `createPermission` - Create new permission (admin/developer only)
+- `updatePermission` - Update permission (admin/developer only)
+- `deletePermission` - Delete permission (admin/developer only)
+- `seedPermissions` - Seed system permissions (admin/developer only)
 
 ---
 
@@ -139,7 +200,7 @@ docker-compose logs -f
 - Run NestJS server locally (without Docker):
 
 ```bash
-npm run start:dev
+npm run nest:dev
 ```
 
 - Run Prisma migrations:

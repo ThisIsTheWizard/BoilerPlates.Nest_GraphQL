@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { Prisma, Role, RoleName } from '@prisma/client'
+import { Prisma, Role } from '@prisma/client'
 import { map } from 'lodash'
 
 import { CommonService } from '@/common/common.service'
 import { PrismaService } from '@/prisma/prisma.service'
 import { RoleService } from '@/role/role.service'
-import { CreateUserDto, UpdateUserDto } from '@/user/user.dto'
+import { CreateUserInput, UpdateUserInput } from '@/user/user.inputs'
 
 @Injectable()
 export class UserService {
@@ -15,11 +15,11 @@ export class UserService {
     private roleService: RoleService
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const hashedPassword = await this.commonService.hashPassword(createUserDto.password)
+  async create(createUserInput: CreateUserInput) {
+    const hashedPassword = await this.commonService.hashPassword(createUserInput.password)
     return this.prismaService.user.create({
       data: {
-        ...createUserDto,
+        ...createUserInput,
         password: hashedPassword
       }
     })
@@ -44,11 +44,11 @@ export class UserService {
     })
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserInput: UpdateUserInput) {
     try {
       return this.prismaService.user.update({
         where: { id },
-        data: updateUserDto
+        data: updateUserInput
       })
     } catch (error: unknown) {
       if (error instanceof Object && 'code' in error && error.code === 'P2025') {
@@ -117,50 +117,5 @@ export class UserService {
       }
       throw error
     }
-  }
-
-  async assignRole(user_id: string, role_name: string) {
-    if (!Object.values(RoleName).includes(role_name as RoleName)) {
-      throw new Error('INVALID_ROLE_NAME')
-    }
-
-    const role = await this.roleService.findOne({ where: { name: role_name as RoleName } })
-    if (!role) {
-      throw new Error('ROLE_NOT_FOUND')
-    }
-
-    return this.prismaService.roleUser.upsert({
-      where: {
-        user_id_role_id: {
-          user_id,
-          role_id: role.id
-        }
-      },
-      update: {},
-      create: {
-        user_id,
-        role_id: role.id
-      }
-    })
-  }
-
-  async revokeRole(user_id: string, role_name: string) {
-    if (!Object.values(RoleName).includes(role_name as RoleName)) {
-      throw new Error('INVALID_ROLE_NAME')
-    }
-
-    const role = await this.roleService.findOne({ where: { name: role_name as RoleName } })
-    if (!role) {
-      throw new Error('ROLE_NOT_FOUND')
-    }
-
-    return this.prismaService.roleUser.delete({
-      where: {
-        user_id_role_id: {
-          user_id,
-          role_id: role.id
-        }
-      }
-    })
   }
 }

@@ -72,3 +72,70 @@ export class AssignRoleInput {
   @IsNotEmpty()
   role_id: string
 }
+
+@InputType()
+export class VerifyEmailInput {
+  @Field()
+  @IsEmail()
+  email: string
+
+  @Field()
+  @IsString()
+  token: string
+}
+
+@InputType()
+export class ResendVerificationInput {
+  @Field()
+  @IsEmail()
+  email: string
+}
+
+@InputType()
+export class VerifyUserPasswordInput {
+  @Field()
+  @IsString()
+  password: string
+}
+
+@InputType()
+export class CancelChangeEmailInput {
+  @Field()
+  @IsEmail()
+  email: string
+}
+
+@InputType()
+export class SetUserEmailInput {
+  @Field()
+  @IsEmail()
+  new_email: string
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  user_id: string
+}
+
+@InputType()
+export class SetUserPasswordInput {
+  @Field()
+  @IsPassword()
+  password: string
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  user_id: string
+}
+
+@InputType()
+export class VerifyForgotPasswordCodeInput {
+  @Field()
+  @IsEmail()
+  email: string
+
+  @Field()
+  @IsString()
+  token: string
+}

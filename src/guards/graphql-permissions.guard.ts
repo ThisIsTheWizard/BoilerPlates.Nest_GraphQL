@@ -15,7 +15,14 @@ export class GraphQLPermissionsGuard implements CanActivate {
       context.getClass()
     ])
 
-    if (!requiredPermissions || requiredPermissions.length === 0) {
+    if (!requiredPermissions) {
+      return true
+    }
+
+    // Ensure requiredPermissions is always an array
+    const permissionsArray = Array.isArray(requiredPermissions) ? requiredPermissions : [requiredPermissions]
+    
+    if (permissionsArray.length === 0) {
       return true
     }
 
@@ -23,7 +30,7 @@ export class GraphQLPermissionsGuard implements CanActivate {
     const request = ctx.getContext().req
     const userPermissions = request.user?.permissions ?? []
 
-    const hasPermission = requiredPermissions.some((permission) => userPermissions.includes(permission))
+    const hasPermission = permissionsArray.some((permission) => userPermissions.includes(permission))
     if (!hasPermission) {
       throw new ForbiddenException('INSUFFICIENT_PERMISSION')
     }

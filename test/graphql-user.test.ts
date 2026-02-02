@@ -106,7 +106,7 @@ describe('UserResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'newuser@test.com',
+          email: 'newuser@wizardcld.com',
           password: 'Password123!',
           first_name: 'New',
           last_name: 'User'
@@ -123,7 +123,7 @@ describe('UserResolver (GraphQL)', () => {
       }
       if (response.data.data?.createUser) {
         expect(response.data.data.createUser).toMatchObject({
-          email: 'newuser@test.com'
+          email: 'newuser@wizardcld.com'
         })
       }
     })
@@ -259,7 +259,7 @@ describe('UserResolver (GraphQL)', () => {
           query: createMutation, 
           variables: { 
             input: { 
-              email: 'todelete@test.com', 
+              email: 'todelete@wizardcld.com', 
               password: 'Password123!' 
             } 
           } 

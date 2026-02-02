@@ -86,7 +86,7 @@ describe('AuthResolver Extended (GraphQL)', () => {
       const variables = {
         input: {
           user_id: '1',
-          new_email: 'newemail@test.com'
+          new_email: 'newemail@wizardcld.com'
         }
       }
 
@@ -261,7 +261,7 @@ describe('AuthResolver Extended (GraphQL)', () => {
       const variables = {
         input: {
           user_id: '1',
-          new_email: 'test@test.com'
+          new_email: 'test@wizardcld.com'
         }
       }
 

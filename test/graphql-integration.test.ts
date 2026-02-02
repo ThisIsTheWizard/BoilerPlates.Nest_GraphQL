@@ -17,13 +17,13 @@ describe('GraphQL Integration Tests', () => {
     // Create and login as regular user
     const createUser = await api.post('/graphql', {
       query: `mutation CreateUser($input: CreateUserInput!) { createUser(input: $input) { id email } }`,
-      variables: { input: { email: 'user@test.com', password: 'password' } }
+      variables: { input: { email: 'user@wizardcld.com', password: 'password' } }
     }, { headers: { Authorization: `Bearer ${adminToken}` } })
 
     if (createUser.data.data?.createUser) {
       const userLogin = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'user@test.com', password: 'password' } }
+        variables: { input: { email: 'user@wizardcld.com', password: 'password' } }
       })
       userToken = userLogin.data.data?.login?.access_token
     }
@@ -85,7 +85,7 @@ describe('GraphQL Integration Tests', () => {
           query: createMutation, 
           variables: { 
             input: { 
-              email: 'consistency@test.com', 
+              email: 'consistency@wizardcld.com', 
               password: 'Password123!',
               first_name: 'Test',
               last_name: 'User'
@@ -115,7 +115,7 @@ describe('GraphQL Integration Tests', () => {
 
         expect(getResponse.data.data.user).toMatchObject({
           id: userId,
-          email: 'consistency@test.com',
+          email: 'consistency@wizardcld.com',
           first_name: 'Test',
           last_name: 'User'
         })
@@ -229,7 +229,7 @@ describe('GraphQL Integration Tests', () => {
             query: mutation, 
             variables: { 
               input: { 
-                email: `concurrent${i}@test.com`, 
+                email: `concurrent${i}@wizardcld.com`, 
                 password: 'Password123!' 
               } 
             } 
@@ -243,7 +243,7 @@ describe('GraphQL Integration Tests', () => {
       responses.forEach((response, index) => {
         expect(response.status).toBe(200)
         if (response.data.data?.createUser) {
-          expect(response.data.data.createUser.email).toBe(`concurrent${index}@test.com`)
+          expect(response.data.data.createUser.email).toBe(`concurrent${index}@wizardcld.com`)
         }
       })
     })

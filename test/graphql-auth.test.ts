@@ -194,7 +194,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'nonexistent@test.com'
+          email: 'nonexistent@wizardcld.com'
         }
       }
 
@@ -255,7 +255,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'nonexistent@test.com'
+          email: 'nonexistent@wizardcld.com'
         }
       }
 
@@ -317,7 +317,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'newemail@test.com'
+          email: 'newemail@wizardcld.com'
         }
       }
 
@@ -339,7 +339,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'newemail@test.com'
+          email: 'newemail@wizardcld.com'
         }
       }
 

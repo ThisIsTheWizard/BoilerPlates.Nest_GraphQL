@@ -10,7 +10,7 @@ describe('GraphQL Integration Tests', () => {
     // Get admin token
     const adminLogin = await api.post('/graphql', {
       query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-      variables: { input: { email: 'admin@test.com', password: 'password' } }
+      variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
     })
     adminToken = adminLogin.data.data?.login?.access_token
 

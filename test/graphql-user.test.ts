@@ -15,7 +15,7 @@ describe('UserResolver (GraphQL)', () => {
     `
     const loginResponse = await api.post('/graphql', {
       query: loginMutation,
-      variables: { input: { email: 'admin@test.com', password: 'password' } }
+      variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
     })
     
     if (loginResponse.data.errors) {
@@ -336,7 +336,7 @@ describe('UserResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com',
+          email: 'admin@wizardcld.com',
           password: 'Password123!'
         }
       }

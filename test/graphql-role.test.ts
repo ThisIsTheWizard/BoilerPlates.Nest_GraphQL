@@ -15,7 +15,7 @@ describe('RoleResolver (GraphQL)', () => {
     `
     const loginResponse = await api.post('/graphql', {
       query: loginMutation,
-      variables: { input: { email: 'admin@test.com', password: 'password' } }
+      variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
     })
     
     if (loginResponse.data.errors) {

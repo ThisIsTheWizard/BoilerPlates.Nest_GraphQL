@@ -62,7 +62,7 @@ describe('GraphQL Basic Tests', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com',
+          email: 'admin@wizardcld.com',
           password: 'password'
         }
       }

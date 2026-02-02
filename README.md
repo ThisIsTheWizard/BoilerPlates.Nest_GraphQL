@@ -129,6 +129,7 @@ docker-compose up -d --build
 ## 📋 Available GraphQL Operations
 
 ### Authentication
+
 - `register` - Register a new user
 - `verifyUserEmail` - Verify user email with token
 - `resendVerificationEmail` - Resend email verification
@@ -151,6 +152,7 @@ docker-compose up -d --build
 - `revokeRole` - Revoke role from user (admin only)
 
 ### User Management
+
 - `users` - Get all users (admin/developer only)
 - `user(id)` - Get user by ID (admin/developer only)
 - `createUser` - Create new user (admin/developer only)
@@ -158,6 +160,7 @@ docker-compose up -d --build
 - `deleteUser` - Delete user (admin/developer only)
 
 ### Role Management
+
 - `roles` - Get all roles (admin/developer only)
 - `role(id)` - Get role by ID (admin/developer only)
 - `createRole` - Create new role (admin/developer only)
@@ -168,6 +171,7 @@ docker-compose up -d --build
 - `seedRoles` - Seed system roles (admin/developer only)
 
 ### Permission Management
+
 - `permissions` - Get all permissions (admin/developer only)
 - `permission(id)` - Get permission by ID (admin/developer only)
 - `createPermission` - Create new permission (admin/developer only)
@@ -240,5 +244,5 @@ Feel free to use and modify it for your projects.
 
 ---
 
-👋 Created by [Elias Shekh](https://sheikhthewizard.world)
+👋 Created by [Elias Shekh](https://portfolio.wizardcld.com)
 If you find this useful, ⭐ the repo or reach out!

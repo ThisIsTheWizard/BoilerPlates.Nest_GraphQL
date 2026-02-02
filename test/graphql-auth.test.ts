@@ -49,7 +49,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com',
+          email: 'admin@wizardcld.com',
           password: 'password'
         }
       }
@@ -96,7 +96,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const loginResponse = await api.post('/graphql', {
         query: loginMutation,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -119,7 +119,7 @@ describe('AuthResolver (GraphQL)', () => {
         console.log('Me Errors:', JSON.stringify(response.data.errors, null, 2))
       }
       expect(response.data.data.me).toMatchObject({
-        email: 'admin@test.com'
+        email: 'admin@wizardcld.com'
       })
     })
   })
@@ -136,7 +136,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const loginResponse = await api.post('/graphql', {
         query: loginMutation,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const tokens = loginResponse.data.data.login
 
@@ -174,7 +174,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com'
+          email: 'admin@wizardcld.com'
         }
       }
 
@@ -216,7 +216,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com',
+          email: 'admin@wizardcld.com',
           token: 'invalid-token'
         }
       }
@@ -236,7 +236,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com'
+          email: 'admin@wizardcld.com'
         }
       }
 
@@ -269,7 +269,7 @@ describe('AuthResolver (GraphQL)', () => {
     it('success', async () => {
       const loginResponse = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -306,7 +306,7 @@ describe('AuthResolver (GraphQL)', () => {
     it('success', async () => {
       const loginResponse = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -353,7 +353,7 @@ describe('AuthResolver (GraphQL)', () => {
     it('success', async () => {
       const loginResponse = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -382,7 +382,7 @@ describe('AuthResolver (GraphQL)', () => {
     it('error - wrong current password', async () => {
       const loginResponse = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -411,7 +411,7 @@ describe('AuthResolver (GraphQL)', () => {
     it('success', async () => {
       const loginResponse = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -439,7 +439,7 @@ describe('AuthResolver (GraphQL)', () => {
     it('error - wrong password', async () => {
       const loginResponse = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -487,7 +487,7 @@ describe('AuthResolver (GraphQL)', () => {
     it('error - role not found', async () => {
       const loginResponse = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -516,7 +516,7 @@ describe('AuthResolver (GraphQL)', () => {
     it('error - role not found', async () => {
       const loginResponse = await api.post('/graphql', {
         query: `mutation Login($input: LoginInput!) { login(input: $input) { access_token } }`,
-        variables: { input: { email: 'admin@test.com', password: 'password' } }
+        variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
       })
       const { access_token } = loginResponse.data.data.login
 
@@ -553,7 +553,7 @@ describe('AuthResolver (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com',
+          email: 'admin@wizardcld.com',
           password: 'Password123!'
         }
       }

@@ -15,7 +15,7 @@ describe('AuthResolver Extended (GraphQL)', () => {
     `
     const loginResponse = await api.post('/graphql', {
       query: loginMutation,
-      variables: { input: { email: 'admin@test.com', password: 'password' } }
+      variables: { input: { email: 'admin@wizardcld.com', password: 'password' } }
     })
     
     if (loginResponse.data.errors) {
@@ -34,7 +34,7 @@ describe('AuthResolver Extended (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com'
+          email: 'admin@wizardcld.com'
         }
       }
 
@@ -170,7 +170,7 @@ describe('AuthResolver Extended (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com'
+          email: 'admin@wizardcld.com'
         }
       }
 
@@ -191,7 +191,7 @@ describe('AuthResolver Extended (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com',
+          email: 'admin@wizardcld.com',
           token: 'test-token',
           password: 'NewPassword123!'
         }
@@ -213,7 +213,7 @@ describe('AuthResolver Extended (GraphQL)', () => {
       `
       const variables = {
         input: {
-          email: 'admin@test.com',
+          email: 'admin@wizardcld.com',
           token: '123456'
         }
       }

@@ -22,7 +22,7 @@ FROM base AS prod-dependencies
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json .
 COPY prisma ./prisma
 
 RUN npm install -g pnpm && pnpm i --prod && pnpm db:generate
@@ -31,7 +31,6 @@ FROM base AS runner
 
 WORKDIR /app
 
-# Install dependencies for Prisma
 RUN apk add --no-cache openssl
 
 ENV NODE_ENV=production

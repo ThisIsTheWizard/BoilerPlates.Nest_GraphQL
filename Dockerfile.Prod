@@ -16,7 +16,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 
 COPY . .
 
-RUN npm install -g pnpm && pnpm lint && pnpm build
+RUN npm install -g pnpm && pnpm lint && pnpm build && pnpm db:generate
 
 FROM base AS prod-dependencies
 

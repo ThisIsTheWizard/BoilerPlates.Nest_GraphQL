@@ -1,6 +1,6 @@
-import { Field, InputType } from '@nestjs/graphql'
-import { IsEmail, IsOptional, IsString, IsUUID } from 'class-validator'
 import { IsPassword } from '@/decorators/password.decorator'
+import { Field, InputType } from '@nestjs/graphql'
+import { IsEmail, IsOptional, IsString } from 'class-validator'
 
 @InputType()
 export class RegisterInput {

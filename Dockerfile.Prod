@@ -16,28 +16,23 @@ COPY --from=dependencies /app/node_modules ./node_modules
 
 COPY . .
 
-RUN npm install -g pnpm && pnpm lint && pnpm build && pnpm db:generate
+RUN npm install -g pnpm && pnpm lint && pnpm db:generate && pnpm nest:build
 
 FROM base AS prod-dependencies
 
 WORKDIR /app
 
-COPY package.json .
+COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma
 
-RUN npm install -g pnpm && pnpm i --prod
+RUN npm install -g pnpm && pnpm i --prod && pnpm db:generate
 
 FROM base AS runner
 
 WORKDIR /app
 
-# Install dependencies for Prisma and Puppeteer (Chromium)
-RUN apk add --no-cache \
-    openssl \
-    nss \
-    freetype \
-    harfbuzz \
-    ca-certificates \
-    ttf-freefont
+# Install dependencies for Prisma
+RUN apk add --no-cache openssl
 
 ENV NODE_ENV=production
 
@@ -51,4 +46,4 @@ USER nestjs
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "node build/main"]
+CMD ["sh", "-c", "node build/src/main"]

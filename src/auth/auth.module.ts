@@ -12,7 +12,6 @@ import { UserService } from '@/user/user.service'
 import { VerificationTokenService } from '@/verification-token/verification-token.service'
 
 @Module({
-
   providers: [
     AuthService,
     AuthResolver,
@@ -21,8 +20,7 @@ import { VerificationTokenService } from '@/verification-token/verification-toke
     PrismaService,
     RoleService,
     UserService,
-    VerificationTokenService,
-
+    VerificationTokenService
   ]
 })
 export class AuthModule {}

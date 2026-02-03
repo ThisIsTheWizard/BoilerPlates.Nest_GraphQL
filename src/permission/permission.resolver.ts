@@ -1,5 +1,5 @@
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { RoleName } from '@prisma/client'
 
 import { Permissions } from '@/decorators/permissions.decorator'
@@ -8,9 +8,9 @@ import { GraphQLAuthGuard } from '@/guards/graphql-auth.guard'
 import { GraphQLPermissionsGuard } from '@/guards/graphql-permissions.guard'
 import { GraphQLRolesGuard } from '@/guards/graphql-roles.guard'
 
-import { Permission } from './permission.types'
 import { CreatePermissionInput, UpdatePermissionInput } from './permission.inputs'
 import { PermissionService } from './permission.service'
+import { Permission } from './permission.types'
 
 @Resolver(() => Permission)
 @UseGuards(GraphQLAuthGuard, GraphQLRolesGuard, GraphQLPermissionsGuard)

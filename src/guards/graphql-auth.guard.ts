@@ -2,7 +2,6 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { GqlExecutionContext } from '@nestjs/graphql'
 import { RoleName } from '@prisma/client'
 
-import { RequestUser } from '@/auth/auth.interface'
 import { CommonService } from '@/common/common.service'
 import { PrismaService } from '@/prisma/prisma.service'
 
@@ -16,7 +15,7 @@ export class GraphQLAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context)
     const request = ctx.getContext().req
-    
+
     const token = request.headers.authorization?.replace('Bearer ', '')
     if (!token) {
       throw new UnauthorizedException('UNAUTHORIZED')

@@ -8,7 +8,6 @@ import { RoleResolver } from './role.resolver'
 import { RoleService } from './role.service'
 
 @Module({
-
   providers: [RoleService, RoleResolver, PrismaService, CommonService],
   exports: [RoleService]
 })

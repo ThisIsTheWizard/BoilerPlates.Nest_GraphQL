@@ -13,15 +13,7 @@ import { VerificationTokenService } from '@/verification-token/verification-toke
 @Module({
   imports: [RoleModule],
 
-  providers: [
-    UserService,
-    UserResolver,
-    PrismaService,
-    CommonService,
-    AuthTokenService,
-    VerificationTokenService,
-
-  ],
+  providers: [UserService, UserResolver, PrismaService, CommonService, AuthTokenService, VerificationTokenService],
   exports: [UserService]
 })
 export class UserModule {}

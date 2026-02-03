@@ -3,7 +3,13 @@ import { pick } from 'lodash'
 
 import { TokenResponse } from '@/auth-token/auth-token.interface'
 import { AuthTokenService } from '@/auth-token/auth-token.service'
-import { AssignRoleInput, ChangeEmailInput, ChangePasswordInput, ForgotPasswordInput, RefreshTokenInput, VerifyForgotPasswordInput } from '@/auth/auth.inputs'
+import {
+  AssignRoleInput,
+  ChangePasswordInput,
+  ForgotPasswordInput,
+  RefreshTokenInput,
+  VerifyForgotPasswordInput
+} from '@/auth/auth.inputs'
 import { MessageResponse } from '@/common/common.interface'
 import { CommonService } from '@/common/common.service'
 import { PrismaService } from '@/prisma/prisma.service'

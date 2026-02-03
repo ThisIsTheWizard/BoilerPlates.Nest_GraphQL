@@ -3,7 +3,6 @@ import { Reflector } from '@nestjs/core'
 import { GqlExecutionContext } from '@nestjs/graphql'
 import { RoleName } from '@prisma/client'
 
-import { RequestUser } from '@/auth/auth.interface'
 import { ROLES_KEY } from '@/decorators/roles.decorator'
 
 @Injectable()

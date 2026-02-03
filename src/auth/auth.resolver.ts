@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { RoleName } from '@prisma/client'
+import { Request } from 'express'
 
 import { GqlUser } from '@/decorators/graphql-user.decorator'
 import { Permissions } from '@/decorators/permissions.decorator'
@@ -60,7 +61,7 @@ export class AuthResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(GraphQLAuthGuard)
-  async logout(@Context() context: any): Promise<boolean> {
+  async logout(@Context() context: { req: Request }): Promise<boolean> {
     const token = context.req.headers.authorization?.replace('Bearer ', '')
     await this.authService.logout(token)
     return true
@@ -139,7 +140,10 @@ export class AuthResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(GraphQLAuthGuard)
-  async verifyUserPassword(@Args('input') input: VerifyUserPasswordInput, @GqlUser('user_id') user_id: string): Promise<boolean> {
+  async verifyUserPassword(
+    @Args('input') input: VerifyUserPasswordInput,
+    @GqlUser('user_id') user_id: string
+  ): Promise<boolean> {
     const result = await this.authService.verifyUserPassword(input.password, user_id)
     return result.success
   }

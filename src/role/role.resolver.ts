@@ -1,5 +1,5 @@
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { RoleName } from '@prisma/client'
 
 import { Permissions } from '@/decorators/permissions.decorator'
@@ -8,9 +8,9 @@ import { GraphQLAuthGuard } from '@/guards/graphql-auth.guard'
 import { GraphQLPermissionsGuard } from '@/guards/graphql-permissions.guard'
 import { GraphQLRolesGuard } from '@/guards/graphql-roles.guard'
 
-import { Role } from './role.types'
-import { CreateRoleInput, UpdateRoleInput, ManagePermissionInput } from './role.inputs'
+import { CreateRoleInput, ManagePermissionInput, UpdateRoleInput } from './role.inputs'
 import { RoleService } from './role.service'
+import { Role } from './role.types'
 
 @Resolver(() => Role)
 @UseGuards(GraphQLAuthGuard, GraphQLRolesGuard, GraphQLPermissionsGuard)
@@ -40,10 +40,7 @@ export class RoleResolver {
 
   @Mutation(() => Role)
   @Permissions('role.update')
-  async updateRole(
-    @Args('id', { type: () => ID }) id: string,
-    @Args('input') input: UpdateRoleInput
-  ): Promise<Role> {
+  async updateRole(@Args('id', { type: () => ID }) id: string, @Args('input') input: UpdateRoleInput): Promise<Role> {
     return this.roleService.update(id, input)
   }
 

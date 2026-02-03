@@ -2,7 +2,6 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@
 import { Reflector } from '@nestjs/core'
 import { GqlExecutionContext } from '@nestjs/graphql'
 
-import { RequestUser } from '@/auth/auth.interface'
 import { PERMISSIONS_KEY } from '@/decorators/permissions.decorator'
 
 @Injectable()
@@ -21,7 +20,7 @@ export class GraphQLPermissionsGuard implements CanActivate {
 
     // Ensure requiredPermissions is always an array
     const permissionsArray = Array.isArray(requiredPermissions) ? requiredPermissions : [requiredPermissions]
-    
+
     if (permissionsArray.length === 0) {
       return true
     }
